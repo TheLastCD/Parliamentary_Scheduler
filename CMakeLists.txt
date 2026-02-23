@@ -13,8 +13,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 set(APP_SOURCES
     ${CMAKE_SOURCE_DIR}/src/main.c
     ${CMAKE_SOURCE_DIR}/src/msg/msg.c
+    ${CMAKE_SOURCE_DIR}/src/msg/header.c
+    ${CMAKE_SOURCE_DIR}/src/msg/body.c
     ${CMAKE_SOURCE_DIR}/src/server/socket.c
-    ${CMAKE_SOURCE_DIR}/src/body/body.c
 )
 add_executable(app ${APP_SOURCES})
 

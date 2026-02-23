@@ -62,3 +62,14 @@ int decode_msg(Msg *msg, const uint8_t *buf, size_t buf_len) {
 
   return 1;
 }
+
+int parse_message(const uint8_t *data, size_t data_len, 
+                            msgHeader *hdr, msgBody **body_out) {
+    if (data_len < FIXED_HDR_SIZE) return -1;
+    
+    hdr_parse(data, hdr);
+    size_t body_len = hdr->BodyLen;
+    if (data_len < FIXED_HDR_SIZE + body_len) return -1;
+    
+    return bdy_parse(data + FIXED_HDR_SIZE, body_len, body_out);
+}
