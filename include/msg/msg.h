@@ -1,6 +1,5 @@
 // standard schedule request encoding
 // vaguely ASN.1 inspired
-//
 
 #include <stdint.h>
 #include <stddef.h>
