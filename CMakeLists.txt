@@ -15,6 +15,7 @@ set(APP_SOURCES
     ${CMAKE_SOURCE_DIR}/src/msg/msg.c
     ${CMAKE_SOURCE_DIR}/src/msg/header.c
     ${CMAKE_SOURCE_DIR}/src/msg/body.c
+    ${CMAKE_SOURCE_DIR}/src/msg/payload.c
     ${CMAKE_SOURCE_DIR}/src/server/socket.c
 )
 add_executable(app ${APP_SOURCES})
@@ -24,6 +25,9 @@ enable_testing()
 set(TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/test/msg/test_msg.c
     ${CMAKE_SOURCE_DIR}/src/msg/msg.c
+    ${CMAKE_SOURCE_DIR}/src/msg/body.c
+    ${CMAKE_SOURCE_DIR}/src/msg/header.c
 )
 add_executable(test_msg ${TEST_SOURCES})
+target_compile_options(test_msg PRIVATE -g -O0)
 add_test(NAME msg_tests COMMAND test_msg)

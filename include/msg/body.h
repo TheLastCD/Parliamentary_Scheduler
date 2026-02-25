@@ -23,23 +23,18 @@ typedef enum {
   bdy_MSG,
 } bdr_ret;
 
-// typedef enum {
-//   PARSE_OK = 0,
-//   PARSE_INCOMPLETE, // Need more data
-//   PARSE_ERROR       // Invalid data
-// } parse_result_t;
 
 // Structs
 
 typedef struct {
   bdy_type BodyType;
   bdr_ret ReturnType;
-  uint8_t *MsgBuffer;
 } msgBody;
 
 // functions
 
-int bdy_parse(const uint8_t *data, size_t data_len,msgBody **body_out);
-uint8_t bdy_type_parse(bdy_type *type);
-uint8_t bdy_ret_parse(bdr_ret type);
-uint8_t bdy_buff_parse(uint8_t *MsgBuffer);
+int decode_body(msgBody *bdy, const uint8_t *buf, size_t buf_len, 
+                           size_t expected_body_len); 
+// uint8_t bdy_type_parse(bdy_type *type);
+// uint8_t bdy_ret_parse(bdr_ret type);
+// uint8_t bdy_buff_parse(uint8_t *MsgBuffer);

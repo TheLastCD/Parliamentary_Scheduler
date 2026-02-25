@@ -18,16 +18,20 @@ typedef enum{
 }hdr_reqpriority;
 
 
-// Structs
-typedef struct {
-  uint8_t Requester;
-  hdr_reqpriority PriorityRequested; //requesters opinion
-  uint8_t SeqNum;
-  uint8_t Localref;
-  uint8_t BodyLen;
-} msgHeader;
 
-int hdr_parse(const uint8_t *data, msgHeader *hdr);
+// Structs
+#pragma pack(push, 1)
+typedef struct {
+    uint8_t Requester;
+    hdr_reqpriority PriorityRequested;
+    uint8_t SeqNum;
+    uint8_t Localref;
+    uint8_t BodyLen;
+} msgHeader;
+#pragma pack(pop)
+
+
+int decode_header(msgHeader *hdr, const uint8_t *buf, size_t buf_len); 
 int encode_header(msgHeader *header, uint8_t *raw);
 
 

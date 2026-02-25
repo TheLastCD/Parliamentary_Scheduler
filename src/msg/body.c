@@ -1,17 +1,23 @@
 #include <msg/body.h>
 
-int bdy_parse(const uint8_t *data, size_t data_len, 
-                         msgBody **body_out) {
-    if (data_len < FIXED_BDY_SIZE) return -1;
+int decode_body(msgBody *bdy, const uint8_t *buf, size_t buf_len, 
+                           size_t expected_body_len) {
+    if (buf_len < FIXED_BDY_SIZE) return -1;
     
-    size_t total_len = FIXED_BDY_SIZE + (data_len - FIXED_BDY_SIZE);
-    msgBody *body = malloc(sizeof(msgBody) + (total_len - FIXED_BDY_SIZE - 1));
-    if (!body) return -1;
+    size_t offset = 0;
+    bdy->BodyType = (bdy_type)buf[offset++];
+    bdy->ReturnType = (bdr_ret)buf[offset++];
+
+    size_t msg_data_len = expected_body_len - FIXED_BDY_SIZE;
+    if (msg_data_len > (buf_len - FIXED_BDY_SIZE)) return -1;
     
-    memcpy(body, data, total_len);
-    body->BodyType = (bdy_type)data[0];
-    body->ReturnType = (bdr_ret)data[1];
+    // if (msg_data_len > 0) {
+    //     bdy->MsgBuffer = malloc(msg_data_len);
+    //     if (!bdy->MsgBuffer) return -1;
+    //     memcpy(bdy->MsgBuffer, &buf[offset], msg_data_len);
+    // } else {
+    //     bdy->MsgBuffer = NULL;
+    // }
     
-    *body_out = body;
-    return 0;
+    return -1;
 }

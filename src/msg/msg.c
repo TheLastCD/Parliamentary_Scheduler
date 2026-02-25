@@ -25,8 +25,8 @@ int encode_msg(const Msg *msg, uint8_t *buf, size_t buf_len) {
   buf[offset++] = msg->bdy.BodyType;
   buf[offset++] = msg->bdy.ReturnType;
 
-  if (bdy_len > 0 && msg->bdy.MsgBuffer) {
-    memcpy(&buf[offset], msg->bdy.MsgBuffer, bdy_len);
+  if (bdy_len > 0 && msg->msg_buff) {
+    memcpy(&buf[offset], msg->msg_buff, bdy_len);
   }
 
   return 1;
@@ -34,15 +34,8 @@ int encode_msg(const Msg *msg, uint8_t *buf, size_t buf_len) {
 
 int decode_msg(Msg *msg, const uint8_t *buf, size_t buf_len) {
 
-  size_t offset = 0;
-  msg->hdr.Requester = buf[offset++];
-  msg->hdr.PriorityRequested = buf[offset++];
-  msg->hdr.SeqNum = buf[offset++];
-  msg->hdr.Localref = buf[offset++];
-  msg->hdr.BodyLen = buf[offset++];
-
-  msg->bdy.BodyType = buf[offset++];
-  msg->bdy.ReturnType = buf[offset++];
+  size_t offset = decode_header(&msg->hdr, buf, sizeof(buf));
+  offset = decode_body(&msg->bdy, buf + offset, buf_len, msg->hdr.BodyLen);
 
   size_t body_len = msg->hdr.BodyLen;
   if (buf_len < (offset + body_len)) {
@@ -50,26 +43,14 @@ int decode_msg(Msg *msg, const uint8_t *buf, size_t buf_len) {
   }
 
   if (body_len > 0) {
-    msg->bdy.MsgBuffer = malloc(body_len);
-    if (!msg->bdy.MsgBuffer) {
+    msg->msg_buff = malloc(body_len);
+    if (!msg->msg_buff) {
       return 0; // malloc failed
     }
-    memcpy(msg->bdy.MsgBuffer, &buf[offset], body_len);
-  } 
-  else { 
-    return 0; //not data
+    memcpy(msg->msg_buff, &buf[offset], body_len);
+  } else {
+    return 0; // not data
   }
 
   return 1;
-}
-
-int parse_message(const uint8_t *data, size_t data_len, 
-                            msgHeader *hdr, msgBody **body_out) {
-    if (data_len < FIXED_HDR_SIZE) return -1;
-    
-    hdr_parse(data, hdr);
-    size_t body_len = hdr->BodyLen;
-    if (data_len < FIXED_HDR_SIZE + body_len) return -1;
-    
-    return bdy_parse(data + FIXED_HDR_SIZE, body_len, body_out);
 }

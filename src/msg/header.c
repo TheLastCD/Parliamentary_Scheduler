@@ -2,14 +2,17 @@
 #include <string.h>
 
 
-int hdr_parse(const uint8_t *data, msgHeader *hdr){
-	if (!data || !hdr) return -1;
-	memcpy(hdr, data, FIXED_HDR_SIZE);
-	return 0;
+int decode_header(msgHeader *hdr, const uint8_t *buf, size_t buf_len) {
+    if (buf_len < FIXED_HDR_SIZE) return -1;
+    
+    size_t offset = 0;
+    hdr->Requester = buf[offset++];
+    hdr->PriorityRequested = (hdr_reqpriority)buf[offset++];
+    hdr->SeqNum = buf[offset++];
+    hdr->Localref = buf[offset++];
+    hdr->BodyLen = buf[offset++];
+    
+    return offset;
 }
 
-int encode_header(msgHeader *header, uint8_t *raw) {
-    if (!header || !raw) return -1;
-    memcpy(raw, header, FIXED_HDR_SIZE);  
-    return 0; 
-}
+
