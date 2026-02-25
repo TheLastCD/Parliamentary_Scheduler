@@ -35,7 +35,7 @@ int encode_msg(const Msg *msg, uint8_t *buf, size_t buf_len) {
 int decode_msg(Msg *msg, const uint8_t *buf, size_t buf_len) {
 
   size_t offset = decode_header(&msg->hdr, buf, sizeof(buf));
-  offset = decode_body(&msg->bdy, buf + offset, buf_len, msg->hdr.BodyLen);
+  offset += decode_body(&msg->bdy, buf, buf_len, msg->hdr.BodyLen);
 
   size_t body_len = msg->hdr.BodyLen;
   if (buf_len < (offset + body_len)) {

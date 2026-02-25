@@ -10,7 +10,7 @@
 
 // Enums
 typedef enum {
-  bdy_NONE, // 0x01 ... for ease
+  bdy_NONE, // 0x00 ... for ease
   bdy_READ,
   bdy_WRITE,
   bdy_COPY,

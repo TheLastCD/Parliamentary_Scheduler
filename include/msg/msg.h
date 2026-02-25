@@ -12,7 +12,7 @@
 typedef struct {
   msgHeader hdr;
   msgBody bdy;
-  MsgBuffer *msg_buff;
+  MsgBuffer msg_buff;
 
 } Msg;
 

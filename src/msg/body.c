@@ -19,5 +19,5 @@ int decode_body(msgBody *bdy, const uint8_t *buf, size_t buf_len,
     //     bdy->MsgBuffer = NULL;
     // }
     
-    return -1;
+    return offset;
 }

@@ -15,10 +15,10 @@ int test_msg() {
   test.hdr.Localref = 0x11;
   test.hdr.BodyLen = (uint8_t)sizeof(payload);
   test.bdy.BodyType = bdy_READ;
-  test.bdy.ReturnType = bdy_MSG;
-  // test.bdy.MsgBuffer = payload;
+  test.bdy.ReturnType = bdy_CONFIRM;
+  test.msg_buff = payload;
 
-  uint8_t buff[128];
+  uint8_t buff[24 + test.hdr.BodyLen];
   int x = encode_msg(&test, buff, sizeof(buff));
 
   assert(buff[0] == 0x1);
@@ -27,9 +27,9 @@ int test_msg() {
   assert(buff[3] == 0x11);
   assert(buff[4] == 0x2);
   assert(buff[5] == 0x1);
-  assert(buff[6] == 0x2);
+  assert(buff[6] == 0x1);
   assert(buff[7] == 0x1);
-  // assert(buff[8] == 0x2);
+  assert(buff[8] == 0x2);
 
   Msg test_ret;
   int l = decode_msg(&test_ret, buff, sizeof(buff));
@@ -39,7 +39,7 @@ int test_msg() {
   assert(test_ret.hdr.Requester == 0x1);
   assert(test_ret.hdr.PriorityRequested == hdr_HIGH);
   assert(test_ret.hdr.BodyLen == (uint8_t)sizeof(payload));
-  // assert(test_ret.bdy.MsgBuffer == payload);
+  assert(memcmp(test_ret.msg_buff,payload,test_ret.hdr.BodyLen)==0);
 
   return 1;
 };
