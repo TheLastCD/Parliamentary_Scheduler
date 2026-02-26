@@ -20,7 +20,6 @@ typedef enum{
 
 
 // Structs
-#pragma pack(push, 1)
 typedef struct {
     uint8_t Requester;
     hdr_reqpriority PriorityRequested;
@@ -28,7 +27,6 @@ typedef struct {
     uint8_t Localref;
     uint8_t BodyLen;
 } msgHeader;
-#pragma pack(pop)
 
 
 int decode_header(msgHeader *hdr, const uint8_t *buf, size_t buf_len); 

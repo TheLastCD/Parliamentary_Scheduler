@@ -5,10 +5,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
 // encoding macros
 #define FIXED_BDY_SIZE 2
 
 // Enums
+#pragma once
 typedef enum {
   bdy_NONE, // 0x00 ... for ease
   bdy_READ,
@@ -17,6 +19,7 @@ typedef enum {
   bdy_PING,
 } bdy_type;
 
+#pragma once
 typedef enum {
   bdy_IGNORE,
   bdy_CONFIRM,

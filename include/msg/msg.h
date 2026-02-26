@@ -1,8 +1,8 @@
 // standard schedule request encoding
 // vaguely ASN.1 inspired
-#include <msg/payload.h>
 #include <msg/body.h>
 #include <msg/header.h>
+#include <msg/payload.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -13,7 +13,6 @@ typedef struct {
   msgHeader hdr;
   msgBody bdy;
   MsgBuffer msg_buff;
-
 } Msg;
 
 // Methods
