@@ -1,12 +1,15 @@
 // standard schedule request encoding
 // vaguely ASN.1 inspired
 
+#ifndef MSG_HEADER_H
+#define MSG_HEADER_H
+
 #include <stdint.h>
 #include <stddef.h>
 
 
 // encoding macros
-#define FIXED_HDR_SIZE 6
+#define FIXED_HDR_SIZE 5
 
 
 typedef enum{
@@ -29,7 +32,9 @@ typedef struct {
 } msgHeader;
 
 
-int decode_header(msgHeader *hdr, const uint8_t *buf, size_t buf_len); 
+size_t decode_header(msgHeader *hdr, const uint8_t *buf, size_t buf_len);
 int encode_header(msgHeader *header, uint8_t *raw);
+
+#endif // MSG_HEADER_H
 
 

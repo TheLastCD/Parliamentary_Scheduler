@@ -1,3 +1,6 @@
+#ifndef SCHEDULER_TAPE_H
+#define SCHEDULER_TAPE_H
+
 #include <msg/header.h>
 #include <stdint.h>
 
@@ -16,4 +19,8 @@ typedef struct{
 
 
 
+int act_on_head(tape_machine *tape);
+int progress_head(tape_machine *tape);
+
+#endif // SCHEDULER_TAPE_H
 

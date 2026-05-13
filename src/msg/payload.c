@@ -22,3 +22,10 @@ int payload_dir(MsgBuffer payload, bdy_type bdyType){
 }
 
 // int payload_parse(MsgBuffer payload, bdy_type bdyType);
+int payload_parse(MsgBuffer payload, bdy_type bdyType) {
+    // Parse payload based on body type
+    // For now, just return success
+    (void)payload;
+    (void)bdyType;
+    return 0;
+}

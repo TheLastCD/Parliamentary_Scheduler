@@ -36,7 +36,7 @@ typedef struct {
 
 // functions
 
-int decode_body(msgBody *bdy, const uint8_t *buf, size_t buf_len, 
+size_t decode_body(msgBody *bdy, const uint8_t *buf, size_t buf_len, 
                            size_t expected_body_len); 
 // uint8_t bdy_type_parse(bdy_type *type);
 // uint8_t bdy_ret_parse(bdr_ret type);
