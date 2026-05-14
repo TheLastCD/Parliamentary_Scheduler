@@ -1,10 +1,8 @@
+#ifndef PROTOCOLS_INTERNAL_PING_H
+#define PROTOCOLS_INTERNAL_PING_H
+
+#include "msg/body.h"
 #include <stdint.h>
-
-
-typedef enum{
-	INT_PING,
-}ping_types;
-
 
 
 typedef struct{
@@ -14,4 +12,7 @@ typedef struct{
 
 
 
+int create_ping(const msgBody *bdy);
+int create_ping_response(const msgBody *bdy);
 
+#endif // PROTOCOLS_INTERNAL_PING_H

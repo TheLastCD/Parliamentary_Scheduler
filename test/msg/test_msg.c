@@ -44,10 +44,13 @@ int test_msg() {
   return 1;
 };
 
+#ifndef TEST_SUITE_MAIN
 int main(void) {
   printf("Testing encoding and decoding\n");
   int res = test_msg();
   if (res == 1) {
     printf("--encoding & decoding successful\n");
   }
+  return res == 1 ? 0 : 1;
 }
+#endif
