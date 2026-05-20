@@ -1,0 +1,3 @@
+[submodule "libs/callbacks"]
+	path = libs/callbacks
+	url = https://github.com/TheLastCD/cb_framework

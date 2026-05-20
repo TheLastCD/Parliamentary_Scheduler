@@ -12,9 +12,10 @@ extern int test_server_init(void);
 extern int test_server_start_stop(void);
 extern int test_client_routing(void);
 extern int test_client_process(void);
+extern int test_callbacks(void);
 
 int main(void) {
-    printf("Running combined message, tape, ping, server, and client suite\n");
+    printf("Running combined message, tape, ping, server, client, and callback suite\n");
 
     assert(test_msg() == 1);
     assert(test_tape_messages() == 1);
@@ -27,6 +28,7 @@ int main(void) {
     assert(test_server_start_stop() == 1);
     assert(test_client_routing() == 1);
     assert(test_client_process() == 1);
+    assert(test_callbacks() == 1);
 
     printf("--combined suite successful\n");
     return 0;

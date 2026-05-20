@@ -26,6 +26,8 @@ int kill_client(void);
 int receive_msg(const uint8_t *packet, size_t len);
 const srvMeta *route_msg(const Msg *msg);
 int add_to_queue(const Msg *msg);
+int client_dispatch_next(void);
+size_t client_scheduled_count(void);
 
 bool client_ping_response_sent(void);
 
