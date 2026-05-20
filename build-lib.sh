@@ -1,44 +1,93 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BUILD_DIR=${BUILD_DIR:-build}
-ACTION=${1:-all}
+BUILDDIR="${BUILDDIR:-build}"
+CONFIG="${CONFIG:-Release}"
+ACTION="${1:-all}"
 
 usage() {
   cat <<EOF
-Usage: $0 [clean|configure|build|lib|tests|all]
+Usage: $0 [clean|configure|full|app|lib|tests|check|all]
 
 Commands:
   clean      Remove the build output directory.
   configure  Run CMake configure.
-  build      Build the app and library.
+  full       Build the default target graph (same as: cmake --build build).
+  app        Build only the app target.
   lib        Build only the static library target.
-  tests      Build the test target.
-  all        Clean, configure, and build the library.
+  tests      Build the main test executables explicitly.
+  check      Build everything needed for tests, then run ctest.
+  all        Clean, configure, then do a full build.
 EOF
+}
+
+configure() {
+  cmake -S . -B "$BUILDDIR" -DCMAKE_BUILD_TYPE="$CONFIG"
 }
 
 case "$ACTION" in
   clean)
-    rm -rf "$BUILD_DIR"
+    rm -rf "$BUILDDIR"
     ;;
+
   configure)
-    cmake -S . -B "$BUILD_DIR"
+    configure
     ;;
-  build)
-    cmake --build "$BUILD_DIR" --target app
+
+  full)
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG"
     ;;
+
+  app)
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG" --target app
+    ;;
+
   lib)
-    cmake --build "$BUILD_DIR" --target parliamentary_scheduler
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG" --target parliamentary_scheduler
     ;;
+
   tests)
-    cmake --build "$BUILD_DIR" --target test_suite
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG" --target \
+      test_msg \
+      test_tape \
+      test_ping \
+      test_read \
+      test_write \
+      test_copy \
+      test_server \
+      test_client \
+      test_integration \
+      test_callbacks \
+      test_suite
     ;;
+
+  check)
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG" --target \
+      test_msg \
+      test_tape \
+      test_ping \
+      test_read \
+      test_write \
+      test_copy \
+      test_server \
+      test_client \
+      test_integration \
+      test_callbacks \
+      test_suite
+    ctest --test-dir "$BUILDDIR" --build-config "$CONFIG" --output-on-failure
+    ;;
+
   all)
-    rm -rf "$BUILD_DIR"
-    cmake -S . -B "$BUILD_DIR"
-    cmake --build "$BUILD_DIR" --target parliamentary_scheduler
+    rm -rf "$BUILDDIR"
+    configure
+    cmake --build "$BUILDDIR" --config "$CONFIG"
     ;;
+
   *)
     usage
     exit 1
