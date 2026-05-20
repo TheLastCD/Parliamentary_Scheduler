@@ -44,8 +44,34 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
-    - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+    - name: Build library
+      run: >
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+        --target parliamentary_scheduler
+
+    - name: Build app
+      run: >
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+        --target app
+
+    - name: Build tests
+      run: >
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+        --target
+        test_msg
+        test_tape
+        test_ping
+        test_read
+        test_write
+        test_copy
+        test_server
+        test_client
+        test_integration
+        test_callbacks
+        test_suite
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
