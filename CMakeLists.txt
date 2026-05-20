@@ -7,12 +7,26 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra)
-include_directories(
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/include
+
+# Temporary global include path for legacy tests that compile project .c files directly.
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+# Submodule library: compile in isolation so it sees its own headers first.
+add_library(callbacks_submodule STATIC
+    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
 )
 
-# Main library
+target_include_directories(callbacks_submodule
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/libs/callbacks/include
+)
+
+target_compile_definitions(callbacks_submodule
+    PRIVATE
+        CALLBACK_MANAGER_DISABLE_GLOBAL_WRAPPERS
+)
+
+# Main wrapper/library
 set(LIB_SOURCES
     ${CMAKE_SOURCE_DIR}/src/msg/msg.c
     ${CMAKE_SOURCE_DIR}/src/msg/header.c
@@ -26,20 +40,18 @@ set(LIB_SOURCES
     ${CMAKE_SOURCE_DIR}/src/protocols/internal/write.c
     ${CMAKE_SOURCE_DIR}/src/protocols/internal/copy.c
     ${CMAKE_SOURCE_DIR}/src/callbacks/callback_manager.c
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
 )
 
 add_library(parliamentary_scheduler STATIC ${LIB_SOURCES})
 
-set_source_files_properties(
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
-    PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/libs/callbacks/include -DCALLBACK_MANAGER_DISABLE_GLOBAL_WRAPPERS"
-)
-
 target_include_directories(parliamentary_scheduler
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/libs/callbacks/include
+)
+
+target_link_libraries(parliamentary_scheduler
+    PUBLIC
+        callbacks_submodule
 )
 
 # Main app
@@ -127,18 +139,13 @@ add_test(NAME integration_tests COMMAND test_integration)
 add_executable(test_callbacks
     ${CMAKE_SOURCE_DIR}/test/callbacks/test_callback_manager.c
     ${CMAKE_SOURCE_DIR}/src/callbacks/callback_manager.c
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
     ${CMAKE_SOURCE_DIR}/src/msg/msg.c
     ${CMAKE_SOURCE_DIR}/src/msg/body.c
     ${CMAKE_SOURCE_DIR}/src/msg/header.c
 )
 target_compile_options(test_callbacks PRIVATE -g -O0)
 target_compile_definitions(test_callbacks PRIVATE CALLBACK_STANDALONE)
-target_include_directories(test_callbacks PRIVATE ${CMAKE_SOURCE_DIR}/libs/callbacks/include)
-set_source_files_properties(
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
-    PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/libs/callbacks/include -DCALLBACK_MANAGER_DISABLE_GLOBAL_WRAPPERS"
-)
+target_link_libraries(test_callbacks PRIVATE callbacks_submodule)
 add_test(NAME callback_tests COMMAND test_callbacks)
 
 add_executable(test_suite
@@ -157,13 +164,8 @@ add_executable(test_suite
     ${CMAKE_SOURCE_DIR}/src/server/server.c
     ${CMAKE_SOURCE_DIR}/src/client/client.c
     ${CMAKE_SOURCE_DIR}/src/callbacks/callback_manager.c
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
 )
 target_compile_definitions(test_suite PRIVATE TEST_SUITE_MAIN)
 target_compile_options(test_suite PRIVATE -g -O0)
-target_include_directories(test_suite PRIVATE ${CMAKE_SOURCE_DIR}/libs/callbacks/include)
-set_source_files_properties(
-    ${CMAKE_SOURCE_DIR}/libs/callbacks/src/callbacks/callback_manager.c
-    PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/libs/callbacks/include -DCALLBACK_MANAGER_DISABLE_GLOBAL_WRAPPERS"
-)
+target_link_libraries(test_suite PRIVATE callbacks_submodule)
 add_test(NAME suite_tests COMMAND test_suite)
